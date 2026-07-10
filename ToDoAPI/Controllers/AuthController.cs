@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ToDoAPI.Features.Auth.Common;
 using ToDoAPI.Features.Auth.Login;
 using ToDoAPI.Features.Auth.Register;
 
@@ -13,31 +13,43 @@ namespace ToDoAPI.Controllers
         public AuthController(IMediator mediator) : base(mediator) {}
 
         [HttpPost("register")]
-        public async Task<ActionResult<AuthResponse>> Register(
+        public async Task<ActionResult> Register(
             RegisterCommand command,
             CancellationToken ct)
         {
-            return Ok(await Mediator.Send(command, ct));
+            await Mediator.Send(command, ct);
+
+            return NoContent();
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResponse>> Login(
+        public async Task<ActionResult> Login(
             LoginCommand command,
             CancellationToken ct)
         {
-            return Ok(await Mediator.Send(command, ct));
+            await Mediator.Send(command, ct);
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpGet("check")]
+        public IActionResult Check()
+        {
+            return NoContent();
         }
 
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            Response.Cookies.Append("ClearJwt", "", new CookieOptions
+            Response.Cookies.Delete("access_token", new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddDays(-1)
+                SameSite = SameSiteMode.None,
+                Path = "/"
             });
+
             return NoContent();
         }
     }

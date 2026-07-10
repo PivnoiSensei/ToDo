@@ -8,7 +8,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/features/categories/components/category-sidebar", "src/app/features/categories/components/category-form-modal"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

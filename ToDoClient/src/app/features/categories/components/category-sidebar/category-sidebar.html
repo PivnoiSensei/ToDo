@@ -1,0 +1,117 @@
+<div class="card shadow-sm">
+
+    <div class="card-header fw-bold">
+
+        Categories
+
+    </div>
+
+
+    <div class="list-group list-group-flush">
+
+
+        <button
+            class="list-group-item list-group-item-action"
+
+            [class.active]="selectedCategoryId() === ''"
+
+            (click)="selectCategory.emit('')">
+
+            All Tasks
+
+        </button>
+
+
+        @for(category of categories(); track category.id){
+
+            <div
+                class="list-group-item d-flex justify-content-between align-items-center">
+
+                <button
+
+                    class="btn btn-link text-start text-decoration-none flex-grow-1"
+
+                    [class.text-primary]="selectedCategoryId()===category.id"
+
+                    [class.fw-bold]="selectedCategoryId()===category.id"
+
+                    (click)="selectCategory.emit(category.id)">
+
+                    {{ category.name }}
+
+                </button>
+
+
+
+                <div class="dropdown">
+
+                    <button
+
+                        class="btn btn-sm btn-light"
+
+                        data-bs-toggle="dropdown">
+
+                        ⋮
+
+                    </button>
+
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+
+                            <button
+
+                                class="dropdown-item"
+
+                                (click)="editCategory.emit(category.id)">
+
+                                Rename
+
+                            </button>
+
+                        </li>
+
+
+                        <li>
+
+                            <button
+
+                                class="dropdown-item text-danger"
+
+                                (click)="deleteCategory.emit(category.id)">
+
+                                Delete
+
+                            </button>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        }
+
+
+    </div>
+
+
+
+    <div class="card-footer">
+
+        <button
+
+            class="btn btn-primary w-100"
+
+            (click)="createCategory.emit()">
+
+            + New Category
+
+        </button>
+
+    </div>
+
+</div>

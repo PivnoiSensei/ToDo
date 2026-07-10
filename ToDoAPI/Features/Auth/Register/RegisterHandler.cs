@@ -1,29 +1,35 @@
 ﻿using MediatR;
 using ToDoAPI.Domain.Entities;
-using ToDoAPI.Features.Auth.Common;
+using ToDoAPI.Infrastructure.Authentication;
 using ToDoAPI.Infrastructure.Exceptions;
 using ToDoAPI.Interfaces.Repositories;
 using ToDoAPI.Interfaces.Services;
 
 namespace ToDoAPI.Features.Auth.Register
 {
-    public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponse>
+    public class RegisterHandler : IRequestHandler<RegisterCommand, Unit>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordService _passwordService;
         private readonly IJwtService _jwtService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly JwtSettings _jwtSettings;
 
         public RegisterHandler(
            IUserRepository userRepository,
            IPasswordService passwordService,
-           IJwtService jwtService)  
+           IJwtService jwtService,
+           IHttpContextAccessor httpContextAccessor,
+           Microsoft.Extensions.Options.IOptions<JwtSettings> jwtOptions)  
         {
            _userRepository = userRepository;
            _passwordService = passwordService;
            _jwtService = jwtService;
+           _httpContextAccessor = httpContextAccessor;
+           _jwtSettings = jwtOptions.Value;
         }
 
-        public async Task<AuthResponse> Handle(RegisterCommand req, CancellationToken ct)
+        public async Task<Unit> Handle(RegisterCommand req, CancellationToken ct)
         {
             if(await _userRepository.ExistsByEmailAsync(req.Email))
             {
@@ -41,10 +47,18 @@ namespace ToDoAPI.Features.Auth.Register
 
             var token = _jwtService.GenerateToken(user);
 
-            return new AuthResponse(
-                user.Id,
-                user.Email,
-                token);
+            _httpContextAccessor.HttpContext!.Response.Cookies.Append(
+               "access_token",
+               token,
+               new CookieOptions
+               {
+                   HttpOnly = true,
+                   Secure = true,
+                   SameSite = SameSiteMode.None,
+                   Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes)
+               });
+
+            return Unit.Value;
         }
     }
 }
