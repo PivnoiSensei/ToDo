@@ -8,11 +8,7 @@ import { Task } from '@shared/models/tasks/task';
   templateUrl: './task-card.html'
 })
 export class TaskCard {
-
   task = input.required<Task>();
-
   edit = output<string>();
-
   delete = output<string>();
-
 }

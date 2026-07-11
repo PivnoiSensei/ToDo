@@ -10,11 +10,7 @@ import { FormsModule } from '@angular/forms';
     templateUrl: './toolbar.html'
 })
 export class Toolbar {
-
     search = input.required<string>();
-
     searchChange = output<string>();
-
     create = output<void>();
-
 }

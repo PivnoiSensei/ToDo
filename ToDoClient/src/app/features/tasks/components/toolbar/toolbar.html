@@ -3,25 +3,17 @@
     <div class="input-group" style="max-width:500px;">
 
         <input
-
             class="form-control"
-
             [ngModel]="search()"
-
             (ngModelChange)="searchChange.emit($event)"
-
             placeholder="Search tasks...">
 
     </div>
 
-
     <button
         class="btn btn-primary"
-
         (click)="create.emit()">
-
         + New Task
-
     </button>
 
 </div>
