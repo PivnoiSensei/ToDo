@@ -7,6 +7,10 @@ import { Component, input, output } from '@angular/core';
 })
 export class DeleteDialog {
   visible = input.required<boolean>();
+
+  itemName = input.required<string>();
+  itemType = input<string>('item');
+
   close = output<void>();
   confirm = output<void>();
 }

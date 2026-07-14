@@ -7,222 +7,120 @@
 
     <div class="row">
 
-
         <div class="col-md-3 col-lg-2">
-
-
             <app-category-sidebar
-
-                [categories]="categories"
-
-                [selectedCategoryId]="selectedCategoryId"
-
+                [categories]="categories()"
+                [selectedCategoryId]="selectedCategoryId()"
                 (selectCategory)="onCategoryChanged($event)"
-
                 (createCategory)="openCreateCategory()"
-
                 (editCategory)="openEditCategory($event)"
-
                 (deleteCategory)="openDeleteCategory($event)">
-
             </app-category-sidebar>
-
-
         </div>
-
-
 
         <div class="col-md-9 col-lg-10">
 
-
             <app-toolbar
-
-                [search]="search"
-            
+                [search]="search()"
                 (searchChange)="onSearchChanged($event)"
-            
                 (create)="openCreate()">
-            
             </app-toolbar>
 
-
-
-            @for(task of tasks; track task.id){
-
+            @for(task of tasks(); track task.id){
                 <app-task-card
-
                     [task]="task"
-
                     (edit)="openEdit($event)"
-
                     (delete)="openDelete($event)">
-
                 </app-task-card>
-
             }
 
             @empty{
-
                 <div class="alert alert-info">
-
                     No tasks found.
-
                 </div>
-
             }
 
-
-
             <div class="d-flex justify-content-between align-items-center mt-4">
-
-
                 <div class="d-flex align-items-center">
-
                     <label class="me-2">
-
                         Items per page
-
                     </label>
 
                     <select
                         class="form-select"
                         style="width:100px"
-
-                        [value]="pageSize"
-
+                        [value]="pageSize()"
                         (change)="changePageSize(+$any($event.target).value)">
-
                         <option value="5">5</option>
-
                         <option value="10">10</option>
-
                         <option value="20">20</option>
-
                         <option value="50">50</option>
-
                     </select>
-
                 </div>
-
-
-
-                @if(totalPages>1){
-
+                @if(totalPages()>1){
                     <nav>
-
                         <ul class="pagination mb-0">
-
                             <li
                                 class="page-item"
-
-                                [class.disabled]="page===1">
-
+                                [class.disabled]="page()===1">
                                 <button
                                     class="page-link"
-
                                     (click)="previousPage()">
-
                                     Previous
-
                                 </button>
-
                             </li>
-
-
                             <li class="page-item disabled">
-
                                 <span class="page-link">
-
-                                    {{page}} / {{totalPages}}
-
+                                    {{page()}} / {{totalPages()}}
                                 </span>
-
                             </li>
-
 
                             <li
                                 class="page-item"
-
                                 [class.disabled]="page===totalPages">
-
                                 <button
                                     class="page-link"
-
                                     (click)="nextPage()">
-
                                     Next
-
                                 </button>
-
                             </li>
-
                         </ul>
-
                     </nav>
-
                 }
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
-
-
 <app-task-form-modal
-
-    [visible]="showTaskModal"
-
-    [categories]="categories"
-
-    [task]="selectedTask"
-
+    [visible]="showTaskModal()"
+    [categories]="categories()"
+    [task]="selectedTask()"
     (close)="closeTaskModal()"
-
     (create)="createTask($event)"
-
     (update)="updateTask($event)">
-
 </app-task-form-modal>
 
-
-
 <app-delete-dialog
-
-    [visible]="showDeleteDialog"
-
+    [visible]="showDeleteDialog()"
+    [itemName]="currentTaskToDelete()?.title ?? ''"
+    [itemType]="'task'"
     (close)="closeDelete()"
-
     (confirm)="deleteTask()">
-
 </app-delete-dialog>
 
-
 <app-category-form-modal
-
-    [visible]="showCategoryModal"
-
-    [category]="selectedCategoryForEdit"
-
+    [visible]="showCategoryModal()"
+    [category]="selectedCategoryForEdit()"
     (close)="closeCategoryModal()"
-
     (create)="createCategory($event)"
-
     (update)="updateCategory($event)">
-
 </app-category-form-modal>
 
-
-
 <app-delete-dialog
-
-    [visible]="showDeleteCategoryDialog"
-
+    [visible]="showDeleteCategoryDialog()"
+    [itemName]="currentCategoryToDelete()?.name ?? ''"
+    [itemType]="'category'"
     (close)="closeDeleteCategory()"
-
     (confirm)="deleteCategory()">
-
 </app-delete-dialog>
